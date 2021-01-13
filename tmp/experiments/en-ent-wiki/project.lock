@@ -1,0 +1,42 @@
+init-config:
+  cmd: python -m spacy run init-config
+  script:
+    - python -m spacy init config --lang en --pipeline ner --optimize efficiency -C
+      configs/default.cfg
+  deps: []
+  outs: []
+  spacy_version: 3.0.0rc2
+  spacy_git_version: ace6ae435
+corpus:
+  cmd: python -m spacy run corpus
+  script:
+    - python scripts/partition.py assets/aij-wikiner-en-wp2.bz2 assets/iob
+    - python -m spacy convert assets/iob corpus
+  deps:
+    - path: assets/aij-wikiner-en-wp2.bz2
+      md5: f324f982e29400549d33f5888739f26a
+  outs:
+    - path: corpus/train.spacy
+      md5: e559710e37b1a7de439ff7e68d84847d
+    - path: corpus/dev.spacy
+      md5: 097b8841fbbfdfe78d8e71d916ee5d5c
+    - path: corpus/test.spacy
+      md5: 84092c58619bda7310f3111dc844d986
+  spacy_version: 3.0.0rc2
+  spacy_git_version: ace6ae435
+ray-train:
+  cmd: python -m spacy run ray-train
+  script:
+    - python -m spacy ray train configs/default.cfg --n-workers 2 --gpu-id 0  --verbose
+  deps:
+    - path: corpus/train.spacy
+      md5: e559710e37b1a7de439ff7e68d84847d
+    - path: corpus/dev.spacy
+      md5: 097b8841fbbfdfe78d8e71d916ee5d5c
+    - path: configs/default.cfg
+      md5: 9945581b5623cc8e40cbe387c070ea8a
+  outs:
+    - path: training/default/model-best
+      md5: null
+  spacy_version: 3.0.0rc2
+  spacy_git_version: ace6ae435

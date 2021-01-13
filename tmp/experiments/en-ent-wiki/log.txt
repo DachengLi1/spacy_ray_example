@@ -1,0 +1,3 @@
+[1m
+================================= ray-train =================================[0m
+Running command: /home/dacheng.li/anaconda3/envs/spacy-ray/bin/python -m spacy ray train configs/default.cfg --n-workers 2 --gpu-id 0
